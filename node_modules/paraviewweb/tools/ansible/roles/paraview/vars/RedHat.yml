@@ -1,0 +1,10 @@
+packages:
+  - xorg-x11-server-Xorg
+  - "@gnome-desktop"
+  - mesa-libGL-devel
+  - libXt-devel
+  - libatomic
+  - mesa-libGLU
+  - "@development"
+  - libXrender
+  - fontconfig

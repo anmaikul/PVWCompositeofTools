@@ -1,0 +1,79 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  box-sizing: border-box;
+  max-height: 100%;
+}
+
+.contentContainer {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-y: auto;
+  max-height: calc(100% - 30px);
+
+  background: linear-gradient(#eee 10px, hsla(0,0%,100%,0)) 0 0 / 100% 40px,
+              radial-gradient(at top, rgba(0,0,0,.3), transparent 70%) 0 0 / 100% 10px,
+              linear-gradient(to top, #eee 10px, hsla(0,0%,100%,0)) bottom / 100% 40px,
+              radial-gradient(at bottom, rgba(0,0,0,.3), transparent 70%) bottom / 100% 10px;
+  background-repeat: no-repeat;
+  background-attachment: local, scroll, local, scroll;
+}
+
+.toolbar {
+  background-color: #ddd;
+  border: 1px solid #aaa;
+  line-height: 30px;
+  height: 30px;
+  min-height: 30px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.advancedButton {
+    composes: fa from 'font-awesome/css/font-awesome.css';
+    composes: fa-wrench from 'font-awesome/css/font-awesome.css';
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #aaa;
+    flex: none;
+}
+
+.activeAdvancedButton {
+    composes: advancedButton;
+    color: #111;
+    font-weight: 200;
+}
+
+.filter {
+    border-radius: 15px;
+    padding: 2px 15px;
+    flex: 1 0 0%;
+    border: 1px solid #ddd;
+    line-height: normal;
+    min-width: 10px;
+}
+
+.filter:active, .filter:focus {
+    border: 1px solid #aaa;
+}
+
+.validateButton {
+    composes: fa from 'font-awesome/css/font-awesome.css';
+    composes: fa-paper-plane from 'font-awesome/css/font-awesome.css';
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #aaa;
+    flex: none;
+}
+
+.validateButtonOn {
+    composes: validateButton;
+    color: #111;
+    font-weight: 200;
+}
+

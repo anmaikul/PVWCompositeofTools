@@ -1,0 +1,16 @@
+body {
+	background-color: white;
+}
+
+
+h1 {
+	color: black;
+	text-align: center;
+}
+
+
+#container {
+	max-width: 600px;
+	margin: 0 auto;
+}
+

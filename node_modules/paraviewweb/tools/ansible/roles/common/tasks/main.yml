@@ -1,0 +1,7 @@
+- name: Create ParaViewWeb user
+  become: yes
+  become_user: root
+  user: name={{pvw_user}}
+  tags: common
+
+- include: ./{{ ansible_distribution }}.yml

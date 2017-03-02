@@ -1,0 +1,180 @@
+- include_vars: ../vars/{{ ansible_distribution }}.yml
+
+- name: Install ParaView prerequisite packages
+  become: yes
+  become_user: root
+  package: name={{ item }} state=present
+  with_items: "{{ packages }}"
+  tags:
+    - paraview
+
+- name: stat ParaView download
+  stat: path="/var/tmp/{{paraview_download_filename}}.tar.gz"
+  register: paraview_download_stat
+  tags:
+    - paraview
+
+- name: Download ParaView
+  get_url:
+    url="http://www.paraview.org/files/v5.2/{{paraview_download_filename}}.tar.gz"
+    dest="/var/tmp"
+  register: paraview_tarball
+  when: not paraview_download_stat.stat.exists
+  tags:
+    - paraview
+
+- name: Install ParaView
+  become: yes
+  become_user: root
+  unarchive:
+    src="/var/tmp/{{paraview_download_filename}}.tar.gz"
+    dest=/opt
+    copy=no
+  when: paraview_tarball|changed
+  tags:
+    - paraview
+
+- name: stat ParaView version specific install directory
+  stat: path="/opt/{{paraview_download_filename}}"
+  register: paraview_stat
+  tags:
+    - paraview
+
+- name: Move install specfic directory name to 'paraview'
+  shell: creates="/opt/paraview" mv "/opt/{{paraview_download_filename}}" /opt/paraview
+  become: yes
+  become_user: root
+  when: paraview_stat.stat.exists
+  tags:
+    - paraview
+
+- name: Find ParaView version directory
+  find:
+    paths="/opt/paraview/lib"
+    patterns="paraview-*"
+    recurse=yes file_type=directory
+  register: paraview_find
+  tags:
+    - paraview
+
+- name: Set ParaView versioned library directory
+  set_fact:
+    paraview_versioned_lib_directory: "{{paraview_find.files[0].path}}"
+
+- name: Find ParaView version shared directory
+  find:
+    paths="/opt/paraview/share"
+    patterns="paraview-*"
+    recurse=yes file_type=directory
+  register: paraview_shared_find
+  tags:
+    - paraview
+
+- name: Set ParaView versioned shared directory
+  set_fact:
+    paraview_versioned_shared_directory: "{{paraview_shared_find.files[0].path}}"
+
+- name: Create ParaView data directory
+  become: yes
+  become_user: root
+  file:
+    path=/var/opt/paraview state=directory
+  tags:
+    - paraview
+
+- name: Create ParaView configuration directory
+  become: yes
+  become_user: root
+  file:
+    path=/etc/opt/paraview state=directory
+  tags:
+    - paraview
+
+- name: stat ParaView sample data download
+  stat: path=/var/tmp/ParaViewData-3.8.1.tar.gz
+  register: paraview_data_download_stat
+  tags:
+    - paraview
+
+- name: Download sample data
+  get_url:
+    url="http://www.paraview.org/files/v3.8/ParaViewData-3.8.1.tar.gz"
+    dest="/var/tmp"
+  register: paraview_data_tarball
+  when: not paraview_data_download_stat.stat.exists
+  tags:
+    - paraview
+
+- name: Create data directory
+  become: yes
+  become_user: root
+  file:
+    path="/home/{{pvw_user}}/data"
+    state=directory
+    owner="{{pvw_user}}"
+    group="{{pvw_user}}"
+  tags:
+    - paraview
+
+- name: Install ParaView sample data
+  become: yes
+  become_user: root
+  unarchive:
+    src=/var/tmp/ParaViewData-3.8.1.tar.gz
+    dest="/home/{{pvw_user}}/data"
+    copy=no
+    owner="{{pvw_user}}"
+    group="{{pvw_user}}"
+  when: paraview_data_tarball|changed
+  tags:
+    - paraview
+
+- name: Create LightViz data directory
+  become: yes
+  become_user: root
+  file:
+    path="/home/{{pvw_user}}/data/LightVizDatasets"
+    state=directory
+    owner="{{pvw_user}}"
+    group="{{pvw_user}}"
+  tags:
+    - paraview
+
+- name: Create Web directory
+  become: yes
+  become_user: root
+  file:
+    path="/opt/paraview/www"
+    state=directory
+    owner="{{pvw_user}}"
+    group="{{pvw_user}}"
+  tags:
+    - paraview
+
+- name: Install Visualizer Web directory
+  become: yes
+  become_user: root
+  shell: creates="/opt/paraview/www/visualizer" cp -r "{{paraview_versioned_shared_directory}}/web/visualizer/www" "/opt/paraview/www/visualizer"
+  tags:
+    - paraview
+
+- name: Install LightViz Web directory
+  become: yes
+  become_user: root
+  shell: creates="/opt/paraview/www/lightviz" cp -r "{{paraview_versioned_shared_directory}}/web/lightviz/www" "/opt/paraview/www/lightviz"
+  tags:
+    - paraview
+
+- include: ./{{ ansible_distribution }}.yml
+
+- name: Restart server
+  become: yes
+  become_user: root
+  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+- name: Waiting for server to come back up
+  local_action: wait_for host={{ inventory_hostname }} state=started delay=30 timeout=200
+

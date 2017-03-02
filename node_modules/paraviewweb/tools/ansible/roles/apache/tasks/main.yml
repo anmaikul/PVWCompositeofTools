@@ -1,0 +1,32 @@
+- include_vars: ../vars/{{ ansible_distribution }}.yml
+
+- name: Install apache
+  package: name={{apache_package_name}} state=present
+  become: yes
+  become_user: root
+  tags:
+    - apache
+
+- name: Create proxy mapping file
+  become: yes
+  become_user: root
+  file: dest="{{proxy_db_path}}" mode=640 owner="{{pvw_user}}" group={{apache_user_name}} state=touch
+  tags:
+    - apache
+
+- name: Fix Web directory ownership
+  become: yes
+  become_user: root
+  file:
+    path="/opt/paraview/www"
+    state=directory
+    recurse=yes
+    owner="{{apache_user_name}}"
+    group="{{apache_user_name}}"
+  tags:
+    - paraview
+
+
+- include: ./{{ ansible_distribution }}.yml
+
+

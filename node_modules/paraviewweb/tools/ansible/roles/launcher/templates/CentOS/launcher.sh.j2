@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export DISPLAY=:{{x_port}}
+
+/opt/paraview/bin/pvpython /opt/paraview/lib/python2.7/site-packages/vtk/web/launcher.py /etc/opt/paraview/launcher.json
