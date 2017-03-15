@@ -11,6 +11,7 @@ export default function dataFrameToStateModel(csvInputObj) {
   const csvInput = csvInputObj.csvInput;
   const metaData = csvInputObj.metadata;
 
+  const activeVars = ["Cargo_Capacity_CUFT", "Customer_Rating","Height","Horsepower","Insurance","MSRP","Mileage_City","Repairs"];
   // set some basic viz properties
   dataModel.legendShapes = {
     Circle: "#Circle",
@@ -96,7 +97,11 @@ export default function dataFrameToStateModel(csvInputObj) {
     dataModel.fields[`${name}`].id = i;
     dataModel.fields[`${name}`].name = name;
     //only activate the first few columns in viz, o/w diagram is too cluttered
-    dataModel.fields[`${name}`].active = i < 5 ? true: false; 
+    //dataModel.fields[`${name}`].active = i < 5 ? true: false; 
+
+    // only activate select variables
+    dataModel.fields[`${name}`].active = activeVars.indexOf(name) == -1 ? false: true; 
+
     dataModel.fields[`${name}`].range = [histStats[i].minVal,histStats[i].maxVal];
 
     dataModel.histogram1D_storage[numberOfBins][`${name}`] = {};
@@ -175,8 +180,6 @@ export default function dataFrameToStateModel(csvInputObj) {
       var1_2DhistObj[`${var2Name}`]['maxCount'] = maxCount;
       var1_2DhistObj[`${var2Name}`]['numberOfBins'] = numberOfBins;
 
-
-      dataModel.selectionData[`${var1Name}`][`${var2Name}`] = [var1_2DhistObj[`${var2Name}`]];
     });
   
   });

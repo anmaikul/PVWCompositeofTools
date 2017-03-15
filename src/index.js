@@ -65,51 +65,71 @@ const tonic_map_data_url = url_base + '/data/tonic-arctic-sample-data-1.2.1'
 // const tonic_map_data_url = url_base + 'data/probe/';
 
 
+// define functions
 
-// function that loads the csv data using CSVReader and passes the result to next function
-function loadProcessData() {
+const loadAndProcessData = function(nextFun) {
 
-  if(this.status == 200 &&
-    this.responseText != null &&
-    this.responseText != null) {
-    // success!
+  return function() {
+    if(this.status == 200 &&
+      this.responseText != null &&
+      this.responseText != null) {
+      // success!
 
-    const csvInput = new CSVReader(this.responseText);
-    csvInput.setData(this.responseText);
+      const csvInput = new CSVReader(this.responseText);
+      csvInput.setData(this.responseText);
 
-    // main({dataModel: dataFrameToStateModel(
-    //   {csvInput: csvInput, metadata: chartJsonData})
-    // });
-    main();
+      nextFun({dataModel: dataFrameToStateModel(
+        {csvInput: csvInput, metadata: chartJsonData})
+      });
+      //main();
 
 
-  } else {
-      console.log('fail');
-    };
-
+    } else {
+        console.log('fail');
+      };
+  };
 }
 
-//The AJAX call that will start the process off and load data from CSV
-const dataReq = new XMLHttpRequest();
-dataReq.onload = loadProcessData;
-dataReq.open("GET", chart_csv_data_url, true);
-dataReq.send(null);
 
 
-function main(args) {
+
+// }
+// // function that loads the csv data using CSVReader and passes the result to next function
+// const loadProcessData = function(nextFun) {
+
+//   if(this.status == 200 &&
+//     this.responseText != null &&
+//     this.responseText != null) {
+//     // success!
+
+//     const csvInput = new CSVReader(this.responseText);
+//     csvInput.setData(this.responseText);
+
+//     nextFun({dataModel: dataFrameToStateModel(
+//       {csvInput: csvInput, metadata: chartJsonData})
+//     });
+//     //main();
+
+
+//   } else {
+//       console.log('fail');
+//     };
+
+// }
+
+
+
+// main function that does everyting after reading in CSV
+const main = function(args) {
     const
-      container = document.querySelector('#workspace1'),
-      container2 = document.querySelector('#workspace2');
+      container = document.querySelector('#workspace1');
 
   // Fix dimension
   //jsonData.metadata.dimensions = [50,50,50];
 
-  // container.style.height = '100vh';
-  // container.style.width = '100vw';
   container.style.height = '100vh';
-  container.style.width = '50vw';
-  container2.style.height = '100vh';
-  container2.style.width = '50vw';  
+  container.style.width = '100vw';
+
   const tonicDataModel = new QueryDataModel(tonicJsonData, tonic_map_data_url);
 
 
@@ -147,12 +167,36 @@ function main(args) {
   const chartDataModel = new QueryDataModel(chartJsonData, 
      chart_data_base_url);
 
-  const scatterBuilder = new ChartBuilder(chartDataModel);
+  const chart2DBuilder = new ChartBuilder(chartDataModel);
+  Object.assign(chart2DBuilder.getState(), {
+    chartType: 'Histogram2D',
+    x: 'Mileage_City',
+    y: 'Cylinders',
+  });
+
+//  origChartState.chartType = 'Histogram2D';
+//  origChartState.x = 'Mileage_City';
+//  origChartState.y = 'Cylinders';
+
+  const pieChartBuilder = new ChartBuilder(chartDataModel);
+  Object.assign(pieChartBuilder.getState(), {
+    chartType: 'PieChart',
+    x: 'Cylinders',
+    y: 'Cylinders', 
+    labels: 'Cylinders',
+    values: 'Cylinders',
+    operation: 'Count',
+  });
 
   const plotlyChartViewerAdapter = new ReactContainer(ChartViewer, {
                    queryDataModel: chartDataModel,
-                   chartBuilder: scatterBuilder
+                   chartBuilder: chart2DBuilder
 
+                   });
+
+  const plotlyChartViewerAdapter2 = new ReactContainer(ChartViewer, {
+                   queryDataModel: chartDataModel,
+                   chartBuilder: pieChartBuilder
                    });
 
   // if the probe has changed, then update LineChartViewer state vars
@@ -190,8 +234,8 @@ function main(args) {
     ScoresProvider.extend(publicAPI, model, initialValues);
     SelectionProvider.extend(publicAPI, model, initialValues);
     AnnotationStoreProvider.extend(publicAPI, model, initialValues);
-  })(MIDataModel);
-  //})(args.dataModel);
+  //})(MIDataModel);
+  })(args.dataModel);
 
   // Init Mutual information
   // provider.setMutualInformationParameterNames([]);
@@ -251,7 +295,7 @@ function main(args) {
     },
     ChartViewer: {
        component: plotlyChartViewerAdapter,
-       viewport: -1,
+       viewport: 4,
      },
     MIFieldSelector: {
       component: fieldSelector,
@@ -266,21 +310,11 @@ function main(args) {
       viewport: 2,
     },
     Probe3DViewer: {
-      component: prob3DAdapter,
-      viewport: -1,
+      component: plotlyChartViewerAdapter2,
+      viewport: 5,
     },
   };
 
-  const viewports2 = {
-    ChartViewer: {
-       component: plotlyChartViewerAdapter,
-       viewport: 0,
-     },
-    Probe3DViewer: {
-      component: prob3DAdapter,
-      viewport: 1,
-    },
-  };
 
     // '2x2': 4,
     // '1x1': 1,
@@ -294,7 +328,7 @@ function main(args) {
 
   const workbench = new Workbench();
   workbench.setComponents(viewports);
-  workbench.setLayout('2x2');
+  workbench.setLayout('3x2');
   const props = {
     onLayoutChange(layout) {
       workbench.setLayout(layout);
@@ -304,22 +338,7 @@ function main(args) {
     },
     activeLayout: workbench.getLayout(),
     viewports: workbench.getViewportMapping(),
-    count: 4,
-  };
-
-  const workbench2 = new Workbench();
-  workbench2.setComponents(viewports2);
-  workbench2.setLayout('2x1');
-  const props2 = {
-    onLayoutChange(layout) {
-      workbench2.setLayout(layout);
-    },
-    onViewportChange(index, instance) {
-      workbench2.setViewport(index, instance);
-    },
-    activeLayout: workbench2.getLayout(),
-    viewports: workbench2.getViewportMapping(),
-    count: 2,
+    count: 6,
   };
 
   const controlPanel = new ReactContainer(WorkbenchController, props);
@@ -333,13 +352,15 @@ function main(args) {
   const mainComponent = new ToggleControl(shiftedWorkbench, controlPanel, 280);
   mainComponent.setContainer(container);
 
-  workbench2.setContainer(container2);
+
+
   workbench.onChange((model) => {
     props.activeLayout = model.layout;
     props.viewports = model.viewports;
     props.count = model.count;
     controlPanel.render();
   });
+
   workbench.onVisibilityChange((event) => {
     const { component, index, count } = event;
     console.log(component ? component.color : 'none', index, count,
@@ -400,3 +421,18 @@ function main(args) {
 
 
 }
+
+
+
+
+
+
+
+
+
+//The AJAX call that will start the process off and load data from CSV
+const dataReq = new XMLHttpRequest();
+dataReq.onload = loadAndProcessData(main);
+dataReq.open("GET", chart_csv_data_url, true);
+dataReq.send(null);
+
