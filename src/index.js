@@ -45,24 +45,24 @@ import 'normalize.css';
 import MIDataModel from '../data/stateMI.json';
 import dataFrameToStateModel from './dataModelUtil';
 
-import tonicJsonData             from '../../../data/tonic-arctic-sample-data-1.2.1/data/probe/info.json';
-import chartJsonData              from '../../../data/chart-data/sedans';
+// import tonicJsonData             from '../../../data/tonic-arctic-sample-data-1.2.1/data/probe/info.json';
+// import chartJsonData              from '../../../data/chart-data/sedans';
 
-const url_base = window.location.protocol + "//" + window.location.host;
+// const url_base = window.location.protocol + "//" + window.location.host;
 
-const chart_data_base_url = url_base + "/data/chart-data/sedans/";
-const chart_csv_data_url = chart_data_base_url + "sedans.csv";
-const tonic_map_data_url = url_base + '/data/tonic-arctic-sample-data-1.2.1' 
-      + '/data/probe/';
-
-// import tonicJsonData             from '../data/probe/info.json';
-// import chartJsonData              from '../data/sedans';
-
-// const url_base = window.location.protocol + "//" + window.location.host + window.location.pathname;
-
-// const chart_data_base_url = url_base + "data/sedans/";
+// const chart_data_base_url = url_base + "/data/chart-data/sedans/";
 // const chart_csv_data_url = chart_data_base_url + "sedans.csv";
-// const tonic_map_data_url = url_base + 'data/probe/';
+// const tonic_map_data_url = url_base + '/data/tonic-arctic-sample-data-1.2.1' 
+//       + '/data/probe/';
+
+import tonicJsonData             from '../data/probe/info.json';
+import chartJsonData              from '../data/sedans';
+
+const url_base = window.location.protocol + "//" + window.location.host + window.location.pathname;
+
+const chart_data_base_url = url_base + "data/sedans/";
+const chart_csv_data_url = chart_data_base_url + "sedans.csv";
+const tonic_map_data_url = url_base + 'data/probe/';
 
 
 // define functions
@@ -217,12 +217,6 @@ const main = function(args) {
 
 
 
-
-  const green = new BGColor('green');
-  const red = new BGColor('red');
-  const blue = new BGColor('blue');
-
-
   const provider = CompositeClosureHelper.newInstance((publicAPI, model, initialValues = {}) => {
     Object.assign(model, initialValues);
     FieldProvider.extend(publicAPI, model, initialValues);
@@ -373,55 +367,7 @@ const main = function(args) {
   // Register window resize handler so workbench redraws when browser is resized
   window.onresize = resizeHandler;
 
-
-
-
-
-
-  // import ChartViewer  from '../node_modules/paraviewweb/src/React/Viewers/ChartViewer';
-  // import React        from 'react';
-  // import ReactDOM     from 'react-dom';
-  // import QueryDataModel from '../node_modules/paraviewweb/src/IO/Core/QueryDataModel'
-  // import PlotlyChartBuilder from '../node_modules/paraviewweb/src/Rendering/Chart/PlotlyChartBuilder';
-  // // Load CSS
-  // require('normalize.css');
-  // // Get react component
-  // const
-  //     container = document.querySelector('.content'),
-  //     data = { xRange: [ -10, 123 ], fields: [] };
-  // function createField(name, size, scale) {
-  //     const data = [];
-  //     for(let i = 0; i < size; i++) {
-  //         data.push(Math.random() * scale * 0.1 + Math.sin(i/size*Math.PI*4) * scale);
-  //     }
-  //     return { name, data };
-  // }
-
-  // data.fields.push(createField('Temperature', 500, 30));
-  // data.fields.push(createField('Pressure', 500, 500));
-  // data.fields.push(createField('Salinity', 500, 1));
-
-  // model = new QueryDataModel(data);
-
-  // new PlotlyChartBuilder(model);
-
-  // container.style.width = '100%';
-  // container.style.height = '100%';
-  // container.style.position = 'absolute';
-  // container.style.padding = '0';
-  // // container.style.margin = '10px';
-  // // container.style.border = 'solid 1px black';
-  // ReactDOM.render(
-  //     React.createElement(
-  //         ChartViewer,
-  //         { queryDataModel: dataModel,
-  //           chartBuilder: new PlotlyChartBuilder(dataModel), 
-  //           width: 500, height: 300 }),
-  //     container);
-
-
 }
-
 
 
 

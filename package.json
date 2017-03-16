@@ -21,6 +21,7 @@
     "paraviewweb": "^2.2.63",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-select": "^1.0.0-rc.3",
     "serve-static": "^1.11.2",
     "tonic-io": "^1.2.19"
   }

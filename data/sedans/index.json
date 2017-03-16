@@ -1,0 +1,71 @@
+{
+  "Chart": {
+    "arrays": {
+      "TSID": "numeric",
+      "MSRP": "numeric",
+      "Seating": "categorical",
+      "Doors": "categorical",
+      "Width": "numeric",
+      "Height": "numeric",
+      "Length": "numeric",
+      "Wheelbase": "numeric",
+      "Front_Head_Rm_in": "numeric",
+      "Front_leg_room_IN": "numeric",
+      "Front_shoulder_room_IN": "numeric",
+      "Rear_head_room_IN": "numeric",
+      "Rear leg room_IN": "numeric",
+      "Rear shoulder room_IN": "numeric",
+      "Fuel_Type": "categorical",
+      "Engine_Type_Fuel": "categorical",
+      "Fuel_Tank_Capacity_gal": "numeric",
+      "Range_City_miles": "numeric",
+      "Range_Hwy_miles": "numeric",
+      "Mileage_City": "numeric",
+      "Mileage_Hwy": "numeric",
+      "Pass_Vol": "numeric",
+      "Curb_weight": "numeric",
+      "Cargo_Capacity_CUFT": "numeric",
+      "Drive_Type": "categorical",
+      "Transmission": "categorical",
+      "Engine_Size": "numeric",
+      "CAM_Type": "categorical",
+      "Engine_Type": "categorical",
+      "Cylinders": "categorical",
+      "Engine_Valves": "categorical",
+      "Engine_Torque_FTLBS": "numeric",
+      "Engine_Torque_RPM": "numeric",
+      "Horsepower": "numeric",
+      "Horsepower (RPM)": "numeric",
+      "Turning_circleFT": "numeric",
+      "SmallOLFront": "categorical",
+      "ModerateOLFront": "categorical",
+      "Side": "categorical",
+      "Roof": "categorical",
+      "HeadRestraintsSeats": "categorical",
+      "FrontCrashOPrev": "categorical",
+      "Customer_Rating": "numeric",
+      "Fuel": "numeric",
+      "Insurance": "numeric",
+      "Financing": "numeric",
+      "State_Fees": "numeric",
+      "Maintenance": "numeric",
+      "Repairs": "numeric",
+      "Depreciation": "numeric"
+    }
+  },
+  "type": [
+    "tonic-query-data-model",
+    "chart"
+  ],
+  "arguments": {},
+  "data": [
+    {
+      "rootFile": true,
+      "name": "chart",
+      "pattern": "sedans.csv",
+      "type": "text"
+    }
+  ],
+  "arguments_order": [],
+  "metadata": {}
+}
